@@ -3,6 +3,7 @@ import { createContext, useReducer } from "react";
 export const PostList = createContext({
   postList: [],
   addPost: () => {},
+  addInitialPosts:() => {},
   deletePost: () => {},
 });
 
@@ -17,13 +18,18 @@ const postListReducer = (currPostList, action) => {
      return [action.payload, ...currPostList];
     }
     
+    
+    else if(action.type==="ADD_INITAIL_POSTS"){
+          return(action.payload.posts)
+        }
+    
   }
 
 
 const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(
     postListReducer,
-    DEFAULT_POST_LIST,
+  []
   );
 
   const addPost = (userId, postTitle, postBody, reactions, tags) => {
@@ -40,6 +46,16 @@ const PostListProvider = ({ children }) => {
     });
   };
 
+    const addInitialPosts = (posts) => {
+    dispatchPostList({
+      type: "ADD_INITAIL_POSTS",
+      payload: {
+        posts,
+      },
+    });
+  };
+
+
   const deletePost = (postId) => {
     dispatchPostList({
       type: "DELETE_POST",
@@ -54,6 +70,7 @@ const PostListProvider = ({ children }) => {
       value={{
         postList,
         addPost,
+        addInitialPosts,
         deletePost,
       }}
     >
@@ -62,23 +79,5 @@ const PostListProvider = ({ children }) => {
   );
 };
 
-const DEFAULT_POST_LIST = [
-  {
-    id: "1",
-    title: "Going to Kathmandu",
-    body: "Hi Friend, I am going to Kathmandu for my vacation. Hope to enjoy a lot. Peace Out.",
-    reaction: 2,
-    userId: "user-9",
-    tags: ["vacation", "kathmandu", "enjoy"],
-  },
-  {
-    id: "2",
-    title: "I am Pass",
-    body: "I Pass in Class 12 Board Examination. Hard to Believe",
-    reaction: 15,
-    userId: "user12",
-    tags: ["Undergraduating", "Unbelievable"],
-  },
-];
 
 export default PostListProvider;
